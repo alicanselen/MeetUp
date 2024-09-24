@@ -1,22 +1,19 @@
 import { Stack } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import Feather from '@expo/vector-icons/Feather';
+import { View , Text,Image } from 'react-native';
 
-import { ScreenContent } from '~/components/ScreenContent';
-
-export default function Home() {
+import events from '~/assets/event.json'
+import EventListItem from '~/components/EventListItem';
+export default function Events() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Tab One' }} />
-      <View style={styles.container}>
-        <ScreenContent path="app/(tabs)/index.tsx" title="Tab One" />
-      </View>
+      <Stack.Screen options={{ title: 'Events ' }} />
+      {/* Event Listesi Item*/}
+      <EventListItem event = {events[0]}/>
+      <EventListItem event = {events[1]}/>
+      <EventListItem event = {events[2]}/>
+      
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-});
