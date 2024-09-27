@@ -26,7 +26,7 @@ export default function EventListItem({event}){
   
        {/* Event Image */}
        <Image 
-       source={{uri:event.image}}
+       source={{uri:event.image_uri}}
        className='w-2/5 aspect-video rounded-xl'
        />
   

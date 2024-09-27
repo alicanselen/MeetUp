@@ -1,14 +1,30 @@
 import { useLocalSearchParams , Stack} from "expo-router";
-import { Text, View , Image, Pressable } from "react-native";
+import { Text, View , Image, Pressable, ActivityIndicator } from "react-native";
 import dayjs from "dayjs"
-import events from '~/assets/event.json'
+import { supabase } from "~/utils/supabase";
+import { useEffect, useState } from "react";
 
 
 
 export default function EventPage(){
     const  {id } = useLocalSearchParams();
+    const [event , setEvent] = useState(null);
+    const [loading , setLoading] = useState(false);
 
-    const  event =events.find((e)=>e.id == id);
+    useEffect(()=> {
+        fetchEvent();
+    },[id]);
+
+    const fetchEvent = async ()=> {
+        setLoading(true);
+        const {data, error} = await supabase.from('events').select('*').eq('id' , id).single();
+        setEvent(data);
+        setLoading(false);
+    };
+
+    if(loading){
+        return <ActivityIndicator/> ;
+    }
 
     if(!event){
         return <Text>Etkinlik Bulunamadi</Text>
@@ -16,7 +32,7 @@ export default function EventPage(){
     return (
         <View className="flex-1 p-3 bg-white gap-3">
             <Stack.Screen options={{title :'Etkinlik Detayi' , headerBackTitleVisible: false , headerTintColor:'black'}}/>
-            <Image source={{uri:event.image}} className='w-full aspect-video rounded-xl'/>
+            <Image source={{uri:event.image_uri}} className='w-full aspect-video rounded-xl'/>
             <Text className='text-3xl font-bold' >{event.title}</Text>
             <Text className='text-lg font semi-bold uppercase text-amber-800'>
             {dayjs(event.datetime).format('ddd,D MMM')} . {dayjs(event.datetime).format('hh:mm A')} 
