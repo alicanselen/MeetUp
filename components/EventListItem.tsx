@@ -2,12 +2,28 @@ import Feather from '@expo/vector-icons/Feather';
 import { View , Text,Image ,Pressable} from 'react-native';
 import  dayjs from 'dayjs'
 import { Link } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { supabase } from '~/utils/supabase';
 
 
 
 export default function EventListItem({event}){
+
+    const [numberOfAttendees , setNumberOfAttendees] = useState(0);
+
+    useEffect(()=>{
+        fetchNumberOfAttendees();
+    } , [event.id]);
+    const fetchNumberOfAttendees = async ()=>{
+        const { count, error } = await supabase
+        .from('attendance')  // 'attendence' yerine 'attendance' olmalı, eğer tablo ismi böyleyse
+        .select('*', { count: 'exact', head: true })  // * yerine sadece count bilgisi almak istiyorsak sütun seçmeyebiliriz
+        .eq('event_id', event.id);
+
+        setNumberOfAttendees(count);
+    };
     return(
-        <Link href={`/${event.id}`} asChild>
+        <Link href={`/event/${event.id}`} asChild>
         <Pressable className='p-3 gap-3 border-b-2 border-gray-100 pb-3'>
         <View className='flex-row'>
           <View className='flex-1 gap-2'>
@@ -33,7 +49,7 @@ export default function EventListItem({event}){
         </View>
        {/*Footer */}
        <View className='flex-row gap-3'>
-        <Text className='text-gray-700 mr-auto'>16 Going</Text>
+        <Text className='text-gray-700 mr-auto'>{numberOfAttendees} Going</Text>
   
         <Feather name="share" size={20} color="gray" />
         <Feather name="bookmark" size={24} color="gray" />

@@ -1,8 +1,5 @@
-import { Stack } from 'expo-router';
-import Feather from '@expo/vector-icons/Feather';
+import { Stack } from 'expo-router';;
 import { View , Text,Image , FlatList } from 'react-native';
-
-import events from '~/assets/event.json'
 import EventListItem from '~/components/EventListItem';
 import { supabase } from '~/utils/supabase';
 import { useEffect, useState } from 'react';
