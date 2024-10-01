@@ -3,13 +3,16 @@ import { Text, View , Image, Pressable, ActivityIndicator } from "react-native";
 import dayjs from "dayjs"
 import { supabase } from "~/utils/supabase";
 import { useEffect, useState } from "react";
+import { useAuth } from "~/contexts/AuthProvider";
 
 
 
 export default function EventPage(){
     const  {id } = useLocalSearchParams();
     const [event , setEvent] = useState(null);
+    const [attendance , setAttendance] = useState(null);
     const [loading , setLoading] = useState(false);
+    const {user} = useAuth();
 
     useEffect(()=> {
         fetchEvent();
@@ -19,8 +22,27 @@ export default function EventPage(){
         setLoading(true);
         const {data, error} = await supabase.from('events').select('*').eq('id' , id).single();
         setEvent(data);
+
+        const { data : attendanceData} = await supabase
+        .from('attendance')
+        .select('*')
+        .eq('user_id' , user.id )
+        .eq('event_id' , id)
+        .single();
+
+        setAttendance(attendanceData);
         setLoading(false);
     };
+    const joinEvent=async ()=>{
+
+        const{data , error} = await supabase
+        .from('attendance')
+        .insert({user_id:user.id,event_id:event.id})
+        .select()
+        .single();
+        
+        setAttendance(data);
+    }
 
     if(loading){
         return <ActivityIndicator/> ;
@@ -45,10 +67,12 @@ export default function EventPage(){
 
             <View className="absolute bottom-0 left-0  right-0 flex-row justify-between border-t-2 border-gray-400 p-5 pb-10 items-center">
             <Text className="text-xl font-semibold">Free</Text>
-                
-                <Pressable className="bg-red-500 p-5 px-8 rounded-md">
+                {attendance ? (
+                    <Text className="text-green-500 font-bold">You Are Attending</Text>
+                ):(
+                <Pressable onPress={()=>joinEvent()} className="bg-red-500 p-5 px-8 rounded-md">
                     <Text className="text-lg font-bold text-white">Join and Rsvp</Text>
-                </Pressable>
+                </Pressable>)}
             </View>
         </View>
     )
