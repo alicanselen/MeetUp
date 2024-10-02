@@ -4,13 +4,14 @@ import dayjs from "dayjs"
 import { supabase } from "~/utils/supabase";
 import { useEffect, useState } from "react";
 import { useAuth } from "~/contexts/AuthProvider";
+import { Attendance, Event } from "~/types/db";
 
 
 
 export default function EventPage(){
     const  {id } = useLocalSearchParams();
-    const [event , setEvent] = useState(null);
-    const [attendance , setAttendance] = useState(null);
+    const [event , setEvent] = useState<Event | null>(null);
+    const [attendance , setAttendance] = useState<Attendance | null>(null);
     const [loading , setLoading] = useState(false);
     const {user} = useAuth();
 

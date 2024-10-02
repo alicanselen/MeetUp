@@ -22,7 +22,7 @@ export default function CreateEvent(){
         { 
             title, 
             description,
-            datetime:date,
+            datetime:date.toISOString(),
             user_id:user.id,
 
         },
