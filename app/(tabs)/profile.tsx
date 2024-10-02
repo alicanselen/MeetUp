@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {  View ,Button, TextInput, Pressable,Text } from 'react-native';
+import Avatar from '~/components/Avatar';
 import { useAuth } from '~/contexts/AuthProvider';
 import { supabase } from '~/utils/supabase';
 
@@ -86,6 +87,17 @@ export default function Profile() {
   return (
     <View className='p-5 bg-white flex-1 gap=3'>
       <Stack.Screen options={{ title: 'Profile' }} />
+
+      <View className='items-center'>
+      <Avatar
+        size={200}
+        url={avatarUrl}
+        onUpload={(url: string) => {
+          setAvatarUrl(url)
+          updateProfile({ username, website, avatar_url: url })
+        }}
+      />
+    </View>
       <TextInput
           editable={false}
           value={session.user.email}
