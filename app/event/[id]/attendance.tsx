@@ -18,8 +18,6 @@ export default function EventAttendance(){
 
         setAttendees(data);
     };
-
-    console.log(attendees);
     return (
         <>
         <FlatList
