@@ -5,6 +5,7 @@ import { supabase } from "~/utils/supabase";
 import { useEffect, useState } from "react";
 import { useAuth } from "~/contexts/AuthProvider";
 import { Attendance, Event } from "~/types/db";
+import SupaImage from "~/components/SupaImage";
 
 
 
@@ -55,7 +56,9 @@ export default function EventPage(){
     return (
         <View className="flex-1 p-3 bg-white gap-3">
             <Stack.Screen options={{title :'Etkinlik Detayi' , headerBackTitleVisible: false , headerTintColor:'black'}}/>
-            <Image source={{uri:event.image_uri}} className='w-full aspect-video rounded-xl'/>
+            
+            <SupaImage path ={event.image_uri} className='w-full aspect-video rounded-xl'/>
+
             <Text className='text-3xl font-bold' >{event.title}</Text>
             <Text className='text-lg font semi-bold uppercase text-amber-800'>
             {dayjs(event.datetime).format('ddd,D MMM')} . {dayjs(event.datetime).format('hh:mm A')} 

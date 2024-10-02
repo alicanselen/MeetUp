@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import DatePicker from "react-native-date-picker";
+import Avatar from "~/components/Avatar";
 import { useAuth } from "~/contexts/AuthProvider";
 import { supabase } from "~/utils/supabase";
 
@@ -12,6 +13,7 @@ export default function CreateEvent(){
     const [ title , setTitle] = useState('')
     const [description , setDescription] = useState('')
     const [loading , isLoading] = useState(false)
+    const [  imageUrl , setImageUrl]=useState('')
     const {user}= useAuth();
 
     const createEvent = async ()=>{
@@ -24,6 +26,7 @@ export default function CreateEvent(){
             description,
             datetime:date.toISOString(),
             user_id:user.id,
+            image_uri:imageUrl,
 
         },
         ])
@@ -43,6 +46,15 @@ export default function CreateEvent(){
     }
     return (
         <View className="bg-white flex-1 p-5 gap-3">
+            <View className='items-center'>
+                <Avatar
+                size={200}
+                url={imageUrl}
+                onUpload={(url: string) => {
+                setImageUrl(url);
+                }}
+                />
+            </View>
             <TextInput 
             value={title}
             onChangeText={(text)=>setTitle(text)}
