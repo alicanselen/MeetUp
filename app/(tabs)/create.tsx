@@ -1,7 +1,8 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import DatePicker from "react-native-date-picker";
+import AddressAutoComplete from "~/components/AddressAutoComplete";
 import Avatar from "~/components/Avatar";
 import { useAuth } from "~/contexts/AuthProvider";
 import { supabase } from "~/utils/supabase";
@@ -14,10 +15,14 @@ export default function CreateEvent(){
     const [description , setDescription] = useState('')
     const [loading , isLoading] = useState(false)
     const [  imageUrl , setImageUrl]=useState('')
+    const [location , setLocation] = useState(null);
     const {user}= useAuth();
 
     const createEvent = async ()=>{
         isLoading(true)
+
+        const long= location.features[0].geometry.coordinates[1];
+        const lat= location.features[0].geometry.coordinates[0];
         const { data, error } = await supabase
         .from('events')
         .insert([
@@ -27,7 +32,8 @@ export default function CreateEvent(){
             datetime:date.toISOString(),
             user_id:user.id,
             image_uri:imageUrl,
-            location_point:'POINT(29.042293 41.139568 )'
+            location:location.features[0].properties.name ,
+            location_point:`POINT(${long} ${lat} )`
 
         },
         ])
@@ -46,7 +52,8 @@ export default function CreateEvent(){
                 
     }
     return (
-        <View className="bg-white flex-1 p-5 gap-3">
+        <ScrollView className="flex-1" contentContainerClassName="bg-white  p-5 gap-3">
+        
             <View className='items-center'>
                 <Avatar
                 size={200}
@@ -89,14 +96,14 @@ export default function CreateEvent(){
             setOpen(false)
             }}
             />
-
+            <AddressAutoComplete onSelected={(location)=> setLocation(location)}/>
         <Pressable 
         onPress={() => createEvent()}
         disabled={loading}
          className="bg-red-500 p-3 px-8 rounded-md mt-auto items-center">
         <Text className="text-lg font-bold text-white"> Create Event</Text>
         </Pressable>
-
-        </View>
+        
+        </ScrollView>
     );
 }
